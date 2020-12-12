@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Resume</title>
+
+    <style>
+        
+    </style>
+</head>
+<body>
+    <!-- Education History -->
+    <section id="edu">
+        <h2>Education</h2>
+    </section>
+
+    <!-- Orgs -->
+    <section id="orgs">
+        <h2>Organizations</h2>
+    </section>
+
+    <!-- Previous works (Machine Projects) -->
+    <section id="works">
+        <h2>Portfolio</h2>
+    </section>
+
+    <!-- Introduction -->
+    <section id="me">
+        <h2>Who Am I</h2>
+    </section>
+
+    <!-- Links to LinkedIn, Twitter, and GitHub -->
+    <section id="links">
+        <h2>More Of Me</h2>
+    </section>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.24.0/firebase-firestore.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.0/firebase-analytics.js"></script>
+
+    <script>
+        function render_edu(dbti, uni){
+            var edu_profile = document.createElement("div");
+            var edu_elem = document.createElement("p");
+            var edu_uni = document.createElement("p");
+
+            edu_profile.className = "edu-profile";
+            edu_elem.className = "edu-elem";
+            edu_uni.className = "edu-uni";
+
+            edu_elem.innerHTML = dbti;
+            edu_uni.innerHTML = uni;
+
+            edu_profile.appendChild(edu_elem);
+            edu_profile.appendChild(edu_uni);
+
+            document.getElementById("edu").appendChild(edu_profile);
+        }
+
+        function render_orgs(Logo, DP, name){
+            var org_photos = document.createElement("div");
+            var org_logo = document.createElement("img");
+            var org_dp = document.createElement("img");
+            var org_name = document.createElement("p");
+
+            org_photos.className = "org-photos";
+            org_logo.className = "org-logo";
+            org_dp.className = "org-dp";
+            org_name.className = "org-name";
+
+            org_logo.setAttribute("src", Logo);
+            org_dp.setAttribute("src", DP);
+            org_name.innerHTML = name;
+
+            org_photos.appendChild(org_name);
+            org_photos.appendChild(org_logo);
+            org_photos.appendChild(org_dp);
+
+            document.getElementById("orgs").appendChild(org_photos);
+        }
+
+        function render_portfolio(prog1, prog2, prog3){
+            var port_profile = document.createElement("div");
+            var port_prog1 = document.createElement("p");
+            var port_prog2 = document.createElement("p");
+            var port_prog3 = document.createElement("p");
+
+            port_profile.className = "port-profile";
+            port_prog1.className = "port-prog1";
+            port_prog2.className = "port-prog2";
+            port_prog3.className = "port-prog3";
+
+            port_prog1.innerHTML = prog1;
+            port_prog2.innerHTML = prog2;
+            port_prog3.innerHTML = prog3;
+
+            port_profile.appendChild(port_prog1);
+            port_profile.appendChild(port_prog2);
+            port_profile.appendChild(port_prog3);
+
+            document.getElementById("works").appendChild(port_profile);
+        }
+
+        function render_links(github, linkedin, twitter){
+            var links_profile = document.createElement("div");
+            var links_git = document.createElement("p");
+            var links_linked = document.createElement("p");
+            var links_twt = document.createElement("p");
+
+            links_profile.className = "links-profile";
+            links_git.className = "links-git";
+            links_linked.className = "links-linked";
+            links_twt.className = "links-twt";
+
+            links_git.innerHTML = github;
+            links_linked.innerHTML = linkedin;
+            links_twt.innerHTML = twitter;
+
+            links_profile.appendChild(links_git);
+            links_profile.appendChild(links_linked);
+            links_profile.appendChild(links_twt);
+
+            document.getElementById("links").appendChild(links_profile);
+        }
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        var firebaseConfig = {
+            apiKey: "AIzaSyD36PyzMzYsAosIKK-6Aeb8r7dEG7R5VOo",
+            authDomain: "fir-1-67bea.firebaseapp.com",
+            projectId: "fir-1-67bea",
+            storageBucket: "fir-1-67bea.appspot.com",
+            messagingSenderId: "673055425559",
+            appId: "1:673055425559:web:c696a59e8be69d81050852",
+            measurementId: "G-6R3VESVHDW"
+        };
+        // Initialize Firebase
+        var app = firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+        var db = firebase.firestore(app);
+
+        db.collection("education").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(doc.data())
+                console.log(`  ${doc.data().dbti}`);
+                console.log(`  ${doc.data().uni}`);
+                render_edu(doc.data().dbti, doc.data().uni);
+            });
+        });
+
+        db.collection("Organizations").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(doc.data())
+                console.log(`  ${doc.data().name}`);
+                render_orgs(doc.data().Logo, doc.data().DP, doc.data().name);
+            });
+        });
+
+        db.collection("portfolio").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(doc.data())
+                console.log(`  ${doc.data().prog1}`);
+                console.log(`  ${doc.data().prog2}`);
+                console.log(`  ${doc.data().prog3}`);
+                render_portfolio(doc.data().prog1, doc.data().prog2, doc.data().prog3);
+            });
+        });
+
+        db.collection("links").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(doc.data())
+                console.log(`  ${doc.data().github}`);
+                console.log(`  ${doc.data().linkedin}`);
+                console.log(`  ${doc.data().twitter}`);
+                render_links(doc.data().github, doc.data().linkedin, doc.data().twitter);
+            });
+        });
+    </script>
+</body>
+</html>
